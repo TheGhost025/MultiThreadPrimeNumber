@@ -3,6 +3,9 @@ public class Producer implements  Runnable{
     private volatile boolean runable=true;
     private  int numofPrime=0;
     private Buffer queue;
+
+    Callable callable;
+
     Producer(Buffer queue,int num){
         number=num;
         this.queue=queue;
@@ -54,8 +57,13 @@ public class Producer implements  Runnable{
         return numofPrime;
     }
 
+    public void onStop(Callable callable) {
+        this.callable = callable;
+    }
+
     public void stop(){
         runable=false;
         queue.notifyFull();
+        this.callable.call();
     }
 }

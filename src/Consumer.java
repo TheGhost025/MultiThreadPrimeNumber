@@ -8,13 +8,16 @@ import java.util.Scanner;
 public class Consumer implements Runnable{
     private Buffer queue;
 
+    String outFile;
+
     private int count =1;
     private long begin;
     private long end;
     private int max;
     private volatile boolean runable =true;
-    Consumer(Buffer queue){
+    Consumer(Buffer queue, String outFile){
         this.queue=queue;
+        this.outFile = outFile;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class Consumer implements Runnable{
             BufferedWriter buffer=null;
             PrintWriter print=null;
             try {
-                File=new FileWriter("put.txt",true);
+                File=new FileWriter(this.outFile,true);
                 buffer=new BufferedWriter(File);
                 print=new PrintWriter(buffer);
                 print.println(x);
