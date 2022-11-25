@@ -14,7 +14,9 @@ public class Consumer implements Runnable{
     private long begin;
     private long end;
     private int max;
-    private volatile boolean runable =true;
+    private boolean runable =true;
+
+    //constructor
     Consumer(Buffer queue, String outFile){
         this.queue=queue;
         this.outFile = outFile;
@@ -23,9 +25,12 @@ public class Consumer implements Runnable{
     @Override
     public void run() {
         while (runable){
+            //to begin a time to calculate the duration time
             if(count==1){
                 begin = System.currentTimeMillis();
             }
+
+            //check the buffer is empty or not if is empty consumer must wait or lock
             if(queue.isEmpty()){
                 try {
                     queue.WaitEmpty();
@@ -34,17 +39,19 @@ public class Consumer implements Runnable{
                     e.printStackTrace();
                     }
                 }
+
             if(!runable){
                 break;
             }
+
             int x = 0;
             if(!queue.isEmpty()){
                 x=queue.remove();
             }
-            if(getmax()>x){
+
+            //to stop a consumer and capture the end time to calculate the duration time
+            if(getmax()>=x){
                 end = System.currentTimeMillis();
-                System.out.println(end-begin);
-                System.out.println("consumer end");
                 stop();
             }
             max=x;
@@ -70,16 +77,17 @@ public class Consumer implements Runnable{
                     e.printStackTrace();
                 }
             }
+            //notify producer
             queue.notifyFull();
-
         }
     }
 
+    //get a max value
     public int getmax(){
         return max;
     }
 
-
+    //stop the consumer
     public void stop(){
         runable=false;
         queue.notifyEmpty();

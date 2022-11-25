@@ -36,13 +36,10 @@ public class Runner {
                 long end = System.currentTimeMillis();
 
                 largestPrime.setText(String.valueOf(consumer.getmax()));
-                System.out.println(consumer.getmax());
         
                 numbersGen.setText(String.valueOf(producer.getNumofPrime()));
-                System.out.println(producer.getNumofPrime());
         
                 timeElapsed.setText(String.valueOf(end-begin));
-                System.out.println(end-begin);
             }
         });
 

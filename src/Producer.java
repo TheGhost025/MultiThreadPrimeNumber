@@ -6,6 +6,7 @@ public class Producer implements  Runnable{
 
     Callable callable;
 
+    //constructor
     Producer(Buffer queue,int num){
         number=num;
         this.queue=queue;
@@ -14,6 +15,7 @@ public class Producer implements  Runnable{
     @Override
     public void run() {
         while (runable){
+            //if the buffer is full the producer must wait or lock
             if(queue.isFull()){
                 try {
                     queue.WaitFull();
@@ -23,9 +25,12 @@ public class Producer implements  Runnable{
                     break;
                 }
             }
+
             if(!runable){
                 break;
             }
+
+            //calcute the prime numbers
             for(int i=1;i<=number;i++){
                 int count =0;
                 for(int j=2;j<=i/2;j++){
@@ -36,23 +41,19 @@ public class Producer implements  Runnable{
                 if(count==0){
                     numofPrime++;
                     queue.add(i);
+                    //notify the consumer
                     queue.notifyEmpty();
-                    try {
-                        Thread.sleep(100);
-                    }
-                    catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
                 }
+
+                //to stop producer
                 if(i==number){
-                    System.out.println("producer end");
-                    queue.notifyEmpty();
                     stop();
                 }
             }
         }
     }
 
+    //total of prime numbers
     public int getNumofPrime(){
         return numofPrime;
     }
@@ -61,6 +62,7 @@ public class Producer implements  Runnable{
         this.callable = callable;
     }
 
+    //to stop producer
     public void stop(){
         runable=false;
         queue.notifyFull();
